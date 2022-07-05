@@ -5,7 +5,7 @@
 .idea/*
 
 target/*
-
+*.class
 # CMake
 cmake-build-*/
 
