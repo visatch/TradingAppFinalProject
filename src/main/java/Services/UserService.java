@@ -3,6 +3,7 @@ package Services;
 import DAO.UserDAO;
 import Model.UserAccount;
 import Utility.ApplicationProperties;
+import Utility.UtilityClass;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -11,6 +12,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.sun.codemodel.internal.JOp;
 
 import javax.swing.*;
 
@@ -31,11 +33,6 @@ public class UserService implements UserDAO {
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 userAccount = gson.fromJson(response.getBody().toString(), UserAccount.class);
                 getUserInfo(userAccount.getIdToken(),userAccount);
-                if (userAccount.isEmailVerified()){
-                    JOptionPane.showMessageDialog(null,"The user is logged in and verified email.");
-                }else {
-                    JOptionPane.showMessageDialog(null,"The user is logged in but not yet verified email");
-                }
             } else
                 JOptionPane.showMessageDialog(null,"The email or password is wrong");
 
@@ -69,7 +66,7 @@ public class UserService implements UserDAO {
     }
 
     @Override
-    public UserAccount getUserInfo(final String idToken, UserAccount userAccount) {
+    public void getUserInfo(final String idToken, UserAccount userAccount) {
         try{
             HttpResponse<JsonNode> response = Unirest.post(ApplicationProperties.firebase_LookUp)
                     .header("accept","application/json")
@@ -85,7 +82,24 @@ public class UserService implements UserDAO {
         }catch (UnirestException ex){
             JOptionPane.showMessageDialog(null,"Error in calling the api " + ": " + ex.toString());
         }
-        return userAccount;
+    }
+
+    @Override
+    public void sendConfirmationEmail(UserAccount userAccount) {
+        try{
+            HttpResponse<JsonNode> response = Unirest.post(ApplicationProperties.firebase_SendOOB)
+                    .queryString("key", ApplicationProperties.apiKey)
+                    .queryString("requestType","VERIFY_EMAIL")
+                    .queryString("idToken",userAccount.getIdToken())
+                    .asJson();
+            if (response.getStatus() == 200) {
+                JOptionPane.showMessageDialog(null,"The email confirmation is sent. Please check your inbox.");
+            }
+            else
+                JOptionPane.showMessageDialog(null,"Error in calling the api " + ": " + response.getStatus() + " : " + response.getBody());
+        }catch (UnirestException ex) {
+            JOptionPane.showMessageDialog(null,"Error in calling the api " + ": " + ex.toString());
+        }
     }
 
     @Override
@@ -105,11 +119,9 @@ public class UserService implements UserDAO {
             }
         }catch (UnirestException ex){
             JOptionPane.showMessageDialog(null,"Error in calling the api " + ": " + ex.toString());
-
         }
         return false;
     }
-
 
     @Override
     public UserAccount createAccount(final String email, final String password) {
@@ -130,7 +142,6 @@ public class UserService implements UserDAO {
                 JsonObject jsonObject = new Gson().fromJson(response.getBody().toString(), JsonObject.class);
                 JOptionPane.showMessageDialog(null,"Error: " + jsonObject.getAsJsonObject("error").getAsJsonObject().get("message").getAsString().replace('\"',' '));
             }
-
         }catch (UnirestException ex){
             JOptionPane.showMessageDialog(null,"There is an error with API calling to firebase");
         }

@@ -52,7 +52,17 @@ public class LoginForm extends JFrame {
                 String password = new String(txtPassword.getPassword());
                 UserService userService = new UserService();
 
-                UserAccount userAccount = userService.signIn(email, password); //To be continue
+                UserAccount userAccount = userService.signIn(email, password);
+                if (userAccount.isEmailVerified()){
+                    JOptionPane.showMessageDialog(null,"The user is logged in and verified email.");
+
+                }else {
+                    int result = JOptionPane.showOptionDialog(null,"The account is not verified yet. Would you like to resent the confirmation email?",
+                            "The email address is not verified yet",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null,new Object[] {"Resend","Cancel"},JOptionPane.NO_OPTION);
+                    if (result == JOptionPane.YES_OPTION){
+                        userService.sendConfirmationEmail(userAccount);
+                    }
+                }
 //                if (userAccount.getIdToken() != null){
 //                    if (userService.isUserEmailVerified(userAccount.getIdToken(),userAccount)){
 //                        JOptionPane.showMessageDialog(null,"Logged in Success");
