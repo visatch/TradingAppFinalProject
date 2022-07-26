@@ -4,27 +4,29 @@ import com.google.gson.annotations.SerializedName;
 
 public class UserAccount {
     @SerializedName("displayName")
-    String name;
+    private String name;
 
     @SerializedName("kind")
-    String kindToken;
+    private String kindToken;
 
     @SerializedName("localId")
-    String localIdToken;
+    private String localIdToken;
 
     @SerializedName("email")
-    String emailAddress;
+    private String emailAddress;
 
     @SerializedName("registered")
-    boolean registered;
+    private boolean registered;
 
     @SerializedName("idToken")
-    String idToken;
+    private String idToken;
 
     @SerializedName("refreshToken")
-    String refreshToken;
+    private String refreshToken;
 
-    boolean emailVerified;
+    private boolean isEmailVerified;
+    private boolean isLogin;
+    private double money;
 
     @Override
     public String toString() {
@@ -36,10 +38,11 @@ public class UserAccount {
                 ", registered=" + registered +
                 ", idToken='" + idToken + '\'' +
                 ", refreshToken='" + refreshToken + '\'' +
-                ", emailVerified=" + emailVerified +
+                ", isEmailVerified=" + isEmailVerified +
+                ", isLogin=" + isLogin +
+                ", money=" + money +
                 '}';
-
-}
+    }
 
     public String getIdToken() {
         return idToken;
@@ -53,7 +56,9 @@ public class UserAccount {
         this.registered = false;
         this.idToken = null;
         this.refreshToken = null;
-        this.emailVerified = false;
+        this.isEmailVerified = false;
+        this.isLogin = false;
+        this.money = 0.0;
     }
 
     public UserAccount(String name, String kindToken, String localIdToken, String emailAddress, boolean registered, String idToken, String refreshToken) {
@@ -64,14 +69,28 @@ public class UserAccount {
         this.registered = registered;
         this.idToken = idToken;
         this.refreshToken = refreshToken;
-        this.emailVerified = false;
+        this.isEmailVerified = false;
+        this.isLogin = false;
+        this.money = 100000;
     }
 
     public boolean isEmailVerified() {
-        return emailVerified;
+        return isEmailVerified;
+    }
+
+    public boolean isLogin(){
+        return isLogin;
     }
 
     public void setEmailVerified(boolean emailVerified) {
-        this.emailVerified = emailVerified;
+        this.isEmailVerified = emailVerified;
+    }
+
+    public void setLogin(boolean login) {
+        isLogin = login;
+    }
+
+    public double getMoney() {
+        return money;
     }
 }

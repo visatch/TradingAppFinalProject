@@ -12,7 +12,6 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.sun.codemodel.internal.JOp;
 
 import javax.swing.*;
 
@@ -32,10 +31,13 @@ public class UserService implements UserDAO {
             {
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 userAccount = gson.fromJson(response.getBody().toString(), UserAccount.class);
+                userAccount.setLogin(true);
                 getUserInfo(userAccount.getIdToken(),userAccount);
-            } else
+            } else if (response.getStatus() == 400)
                 JOptionPane.showMessageDialog(null,"The email or password is wrong");
-
+            else {
+                JOptionPane.showMessageDialog(null,"Something is wrong!");
+            }
         } catch (UnirestException ex) {
             JOptionPane.showMessageDialog(null,"There is an error with API calling to firebase");
         }
@@ -65,6 +67,7 @@ public class UserService implements UserDAO {
         return false;
     }
 
+    // Update email verification status
     @Override
     public void getUserInfo(final String idToken, UserAccount userAccount) {
         try{

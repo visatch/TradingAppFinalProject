@@ -27,6 +27,7 @@ public class LoginForm extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
 
+
         setLocation(UtilityClass.getCenterXPosition(getSize()),UtilityClass.getCenterYPosition(getSize()));
 
         Border margin = new EmptyBorder(10, 10, 10, 10);
@@ -53,24 +54,17 @@ public class LoginForm extends JFrame {
                 UserService userService = new UserService();
 
                 UserAccount userAccount = userService.signIn(email, password);
-                if (userAccount.isEmailVerified()){
+                if (userAccount.isLogin() && userAccount.isEmailVerified()){
                     JOptionPane.showMessageDialog(null,"The user is logged in and verified email.");
-
-                }else {
-                    int result = JOptionPane.showOptionDialog(null,"The account is not verified yet. Would you like to resent the confirmation email?",
-                            "The email address is not verified yet",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null,new Object[] {"Resend","Cancel"},JOptionPane.NO_OPTION);
-                    if (result == JOptionPane.YES_OPTION){
-                        userService.sendConfirmationEmail(userAccount);
+                }else if (userAccount.isLogin()){
+                    if (!userAccount.isEmailVerified()){
+                        int result = JOptionPane.showOptionDialog(null,"The account is not verified yet. Would you like to resent the confirmation email?",
+                                "The email address is not verified yet",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null,new Object[] {"Resend","Cancel"},JOptionPane.NO_OPTION);
+                        if (result == JOptionPane.YES_OPTION){
+                            userService.sendConfirmationEmail(userAccount);
+                        }
                     }
                 }
-//                if (userAccount.getIdToken() != null){
-//                    if (userService.isUserEmailVerified(userAccount.getIdToken(),userAccount)){
-//                        JOptionPane.showMessageDialog(null,"Logged in Success");
-//                    } else {
-//                        JOptionPane.showMessageDialog(null,"Account is registered, but not yet verified");
-//                    }
-//                }
-
                 btnLogin.setEnabled(true);
             }
         });
