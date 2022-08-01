@@ -61,6 +61,19 @@ public class UserAccount {
         this.money = 0.0;
     }
 
+    public UserAccount(String emailAddress) {
+        this.emailAddress = emailAddress;
+        this.money = 100000;
+        this.name = null;
+        this.kindToken = null;
+        this.localIdToken = null;
+        this.registered = false;
+        this.idToken = null;
+        this.refreshToken = null;
+        this.isEmailVerified = false;
+        this.isLogin = false;
+    }
+
     public UserAccount(String name, String kindToken, String localIdToken, String emailAddress, boolean registered, String idToken, String refreshToken) {
         this.name = name;
         this.kindToken = kindToken;
@@ -90,7 +103,12 @@ public class UserAccount {
         isLogin = login;
     }
 
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
     public double getMoney() {
         return money;
     }
+
 }

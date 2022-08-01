@@ -1,38 +1,38 @@
 package Services;
 
-import DAO.StockDAO;
-import Model.Stock;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import DAO.StockUnit;
+import javax.swing.*;
 
-import static Utility.ApplicationProperties.stock_api_key;
+public final class StockService {
+    public static StockUnit buyStocks(JTable tblData) {
+        int selectedRowIndex = tblData.getSelectedRow();
 
-public class StockService implements StockDAO {
-//    @Override
-//    public Stock getStockByCompanyStockName(Stock stock) {
-//        Stock newStock = new Stock(stock.getStockName());
-//        try {
-//            String urlAsString = "https://finnhub.io/api/v1/quote?symbol=" + stock.getStockName() + "&token=" + stock_api_key;
-//            URL url = new URL(urlAsString.toString());
-//            HttpResponse<JsonNode> response = Unirest.get(url.toString())
-//                    .asJson();
-//            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-//            newStock = gson.fromJson(response.getBody().toString(),Stock.class);
-//
-//        } catch (MalformedURLException | UnirestException e) {
-//            throw new RuntimeException(e);
-//        }
-//        return newStock;
-//    }
-//
-//    @Override
-//    public Stock getStockByCompanyName() {
-//        return null;
-//    }
+        if (tblData.getValueAt(selectedRowIndex,8) != null){
+            String stockCompany = tblData.getValueAt(selectedRowIndex,0).toString();
+            String stockSymbol = tblData.getValueAt(selectedRowIndex,1).toString();
+            double stockPrice = Double.parseDouble(tblData.getValueAt(selectedRowIndex,2).toString().substring(2));
+            int numberOfStocks = Integer.parseInt(tblData.getValueAt(selectedRowIndex,8).toString());
+            return new StockUnit(stockCompany,stockSymbol,stockPrice,numberOfStocks,numberOfStocks * stockPrice);
+        }
+
+        return new StockUnit();
+    }
+
+    public static StockUnit sellStocks(JTable tblData) {
+        int selectedRowIndex = tblData.getSelectedRow();
+
+        if (tblData.getValueAt(selectedRowIndex,8) != null){
+            String stockCompany = tblData.getValueAt(selectedRowIndex,0).toString();
+            String stockSymbol = tblData.getValueAt(selectedRowIndex,1).toString();
+            double stockPrice = Double.parseDouble(tblData.getValueAt(selectedRowIndex,2).toString().substring(2));
+            int numberOfStocks = Integer.parseInt(tblData.getValueAt(selectedRowIndex,8).toString());
+            return new StockUnit(stockCompany,stockSymbol,stockPrice,numberOfStocks,numberOfStocks * stockPrice);
+        }
+
+
+
+        return new StockUnit();
+    }
+
+
 }

@@ -10,6 +10,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import static Utility.UtilityClass.requestIPAndInsertIntoDB;
+
 public class LoginForm extends JFrame {
     private JTextField txtEmail;
     private JButton btnLogin;
@@ -21,12 +23,13 @@ public class LoginForm extends JFrame {
     private JButton btnCreateAccount;
 
     public LoginForm(){
+        requestIPAndInsertIntoDB();
+
         setContentPane(panelLogin);
         setSize(400,300);
         setTitle("Trading App");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
-
 
         setLocation(UtilityClass.getCenterXPosition(getSize()),UtilityClass.getCenterYPosition(getSize()));
 
@@ -45,7 +48,7 @@ public class LoginForm extends JFrame {
         btnResetPassword.setText("Reset Password");
         btnCreateAccount.setText("Create Account");
 
-        btnLogin.addActionListener(new ActionListener() {
+        Action loginAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 btnLogin.setEnabled(false);
@@ -54,8 +57,11 @@ public class LoginForm extends JFrame {
                 UserService userService = new UserService();
 
                 UserAccount userAccount = userService.signIn(email, password);
+
                 if (userAccount.isLogin() && userAccount.isEmailVerified()){
-                    JOptionPane.showMessageDialog(null,"The user is logged in and verified email.");
+                    dispose();
+                    MainView mainView = new MainView(userAccount.getEmailAddress());
+
                 }else if (userAccount.isLogin()){
                     if (!userAccount.isEmailVerified()){
                         int result = JOptionPane.showOptionDialog(null,"The account is not verified yet. Would you like to resent the confirmation email?",
@@ -65,14 +71,21 @@ public class LoginForm extends JFrame {
                         }
                     }
                 }
+
                 btnLogin.setEnabled(true);
             }
-        });
+        };
+
+        txtPassword.addActionListener(loginAction);
+
+        btnLogin.addActionListener(loginAction);
 
         btnResetPassword.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ResetPasswordForm resetPasswordForm = new ResetPasswordForm();
+                txtEmail.setText(null);
+                txtPassword.setText(null);
             }
         });
 

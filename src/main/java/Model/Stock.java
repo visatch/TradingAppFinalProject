@@ -36,11 +36,14 @@ public class Stock {
 
             url = new URL(apiGetCompanyName(stockSymbol));
             response = Unirest.get(url.toString()).asJson();
+
             this.companyName = response.getBody().getObject().getString("name");
+
         } catch (MalformedURLException | UnirestException e) {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     public String toString() {
         return "Stock{" +

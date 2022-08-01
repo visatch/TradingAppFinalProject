@@ -31,7 +31,7 @@ public class ResetPasswordForm extends JFrame {
         lblEmail.setText("Enter the email address to reset the password");
         btnReset.setText("Reset Password");
 
-        btnReset.addActionListener(new ActionListener() {
+        Action resetPasswordAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String email = txtEmail.getText();
@@ -41,7 +41,11 @@ public class ResetPasswordForm extends JFrame {
                 if (resetStatus)
                     dispose();
             }
-        });
+        };
+
+        btnReset.addActionListener(resetPasswordAction);
+
+        txtEmail.addActionListener(resetPasswordAction);
 
 
     }

@@ -25,6 +25,15 @@ public class StockPrice {
         this.previousClosePrice = previousClosePrice;
     }
 
+    public StockPrice() {
+        this.price = 0;
+        this.change = 0;
+        this.percent_change = 0;
+        this.lowOfTheDay = 0;
+        this.highOfTheDay = 0;
+        this.previousClosePrice = 0;
+    }
+
     @Override
     public String toString() {
         return "StockPrice{" +
